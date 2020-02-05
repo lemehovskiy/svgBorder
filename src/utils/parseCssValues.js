@@ -35,9 +35,9 @@ const dissolveElement = (val) => {
   if (match) {
     const v = match.length >= 2 ? match[1] : match[0];
     o.value = toFloat(v); //parse value as float
-    o.unit = match.length >= 3 ? match[2] : '';
+    o.units = match.length >= 3 ? match[2] : '';
   } else {
-    o = { value: val, unit: '' };
+    o = { value: val, units: '' };
   }
   return o;
 }

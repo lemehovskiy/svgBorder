@@ -1,65 +1,57 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { parseConfig } from '../../utils/parseCssValues';
+import {parseConfig} from '../../utils/parseCssValues';
 import helpers from '../../utils/helpers';
 import styles from './SvgBorder.module.scss';
 
 
-const useResize = (myRef) => {
-  const [width, setWidth] = useState(0)
-  const [height, setHeight] = useState(0)
-
-  const handleResize = () => {
-    setWidth(myRef.current.offsetWidth)
-    setHeight(myRef.current.offsetHeight)
-  }
-
-  useEffect(() => {
-    myRef.current && myRef.current.addEventListener('resize', handleResize)
-
-    return () => {
-      myRef.current.removeEventListener('resize', handleResize)
-    }
-  }, [myRef.current])
-
-  console.log(width);
-
-  return { width, height }
-}
+const useEventListener = (target, type, listener, ...options) => {
+    React.useEffect(
+        () => {
+            const targetIsRef = target.hasOwnProperty("current");
+            const currentTarget = targetIsRef ? target.current : target;
+            if (currentTarget)
+                currentTarget.addEventListener(type, listener, ...options);
+            return () => {
+                if (currentTarget)
+                    currentTarget.removeEventListener(type, listener, ...options);
+            };
+        },
+        [target, type, listener, options]
+    );
+};
 
 export default (props) => {
-  const componentRef = useRef()
-  const { width, height } = useResize(componentRef)
+    const componentRef = useRef(null)
+    const [size, setSize] = useState({ width: 0, height: 0 });
 
+    function handleResize() {
+        setSize({
+            width: componentRef.current.offsetWidth,
+            height: componentRef.current.offsetHeight
+        })
+    }
 
-  console.log(width);
-  console.log(height);
+    useEffect(() => {
+        handleResize();
+    }, [])
 
+    useEventListener(window, "resize", handleResize);
 
-  // useEffect(() => {
-  //   const width = ref.current ? ref.current.offsetWidth : 0;
-  //   const height = ref.current ? ref.current.offsetHeight : 0;
-  //   console.log('width', width);
-  //   console.log('height', height);
-  // }, [ref.current]);
+    const conf = ['100%, calc(100% - 100px)', '100px, 100%'];
+    const parsedConfig = parseConfig(conf);
 
-  const conf = ['100%, calc(100% - 100px)', '100px, 100%'];
-  const parsedConfig = parseConfig(conf);
+    const polylinePoints = helpers.getPolylinePoints({
+        parsedConfig: parsedConfig,
+        elementSize: size
+    })
 
-  // const polylinePoints = helpers.getPolylinePoints({
-  //   pointsConfig: parsedConfig,
-  //   elementHeight: 100,
-  //   elementWidth: 100
-  // });
+    console.log(polylinePoints);
 
-
-  // console.log(polylinePoints);
-
-
-  return (
-    <div className={styles.wrapper} ref={componentRef}>
-      <p>width: {width}px</p>
-      <p>height: {height}px</p>
-      {props.children}
-    </div>
-  );
+    return (
+        <div className={styles.wrapper} ref={componentRef}>
+            <p>width: {size.width}px</p>
+            <p>height: {size.height}px</p>
+            {props.children}
+        </div>
+    );
 };
