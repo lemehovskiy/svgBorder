@@ -46,8 +46,6 @@ export default (props) => {
         strokeWidth: 3
     })
 
-    console.log(polylinePoints);
-
     return (
         <div className={styles.wrapper} ref={componentRef}>
             <svg className={styles.root}>
