@@ -3,7 +3,6 @@ import {parseConfig} from '../../utils/parseCssValues';
 import helpers from '../../utils/helpers';
 import styles from './SvgBorder.module.scss';
 
-
 const useEventListener = (target, type, listener, ...options) => {
     React.useEffect(
         () => {
@@ -20,7 +19,7 @@ const useEventListener = (target, type, listener, ...options) => {
     );
 };
 
-export default (props) => {
+const SvgBorder = (props) => {
     const componentRef = useRef(null)
     const [size, setSize] = useState({ width: 0, height: 0 });
 
@@ -37,21 +36,36 @@ export default (props) => {
 
     useEventListener(window, "resize", handleResize);
 
-    const conf = ['5, 5', 'calc(100% - 30px), 5', 'calc(100% - 5px), 30px', 'calc(100% - 5px), calc(100% - 5px)', '5, calc(100% - 5px)', '5, 5'];
-    const parsedConfig = parseConfig(conf);
+    const parsedConfig = parseConfig(props.borderConf);
 
     const polylinePoints = helpers.getPolylinePoints({
         parsedConfig: parsedConfig,
-        elementSize: size,
-        strokeWidth: 3
+        elementSize: size
     })
+
+    const elementProps = {
+        points: polylinePoints,
+        fill: props.fill,
+        stroke: props.stroke,
+        strokeWidth: props.strokeWidth
+    }
 
     return (
         <div className={styles.wrapper} ref={componentRef}>
             <svg className={styles.root}>
-                <polygon points={polylinePoints} fill={'none'} stroke={'black'} strokeWidth={'3'}/>
+                {props.type === 'polygon' && <polygon {...elementProps}/>}
+                {props.type === 'polyline' && <polyline {...elementProps}/>}
             </svg>
             {props.children}
         </div>
     );
+};
+
+export default SvgBorder;
+
+SvgBorder.defaultProps = {
+    stroke: 'black',
+    fill: 'none',
+    strokeWidth: '3',
+    type: 'polygon'
 };
