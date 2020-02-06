@@ -37,20 +37,22 @@ export default (props) => {
 
     useEventListener(window, "resize", handleResize);
 
-    const conf = ['100%, calc(100% - 100px)', '100px, 100%'];
+    const conf = ['5, 5', 'calc(100% - 30px), 5', 'calc(100% - 5px), 30px', 'calc(100% - 5px), calc(100% - 5px)', '5, calc(100% - 5px)', '5, 5'];
     const parsedConfig = parseConfig(conf);
 
     const polylinePoints = helpers.getPolylinePoints({
         parsedConfig: parsedConfig,
-        elementSize: size
+        elementSize: size,
+        strokeWidth: 3
     })
 
     console.log(polylinePoints);
 
     return (
         <div className={styles.wrapper} ref={componentRef}>
-            <p>width: {size.width}px</p>
-            <p>height: {size.height}px</p>
+            <svg className={styles.root}>
+                <polygon points={polylinePoints} fill={'none'} stroke={'black'} strokeWidth={'3'}/>
+            </svg>
             {props.children}
         </div>
     );

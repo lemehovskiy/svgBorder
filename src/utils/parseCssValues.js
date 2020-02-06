@@ -84,8 +84,6 @@ export function parseConfig(inputConfig) {
     let coordinate = {};
 
     position.split(', ').forEach((item, index) => {
-      // console.log(coordinate);
-
       let parsedValue = {};
 
       if (hasCalc(item)) {
