@@ -1,6 +1,7 @@
 import React from 'react';
 import SvgBorder from './../SvgBorder/SvgBorder.js';
 import styles from './ListItem.module.scss';
+import Tilt from 'react-tilt';
 
 const borderConf = [
   '5, 5',
@@ -12,9 +13,12 @@ const borderConf = [
 
 export default () => {
     return (
-        <div className={styles.root}>
+      <Tilt className={styles.root} options={{ max : 15 }}>
+        <div className="Tilt-inner">
             <SvgBorder borderConf={borderConf}/>
-              sdfsdf
+            sdfsdf
         </div>
+      </Tilt>
+
     );
 };
